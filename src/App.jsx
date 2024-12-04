@@ -7,9 +7,11 @@ export default function App() {
   const [filteredPlayers, setFilteredPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState(null); // State to hold player ID
+  const [cache, setCache] = useState({}); // Cache state
 
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const fetchInitialPlayers = async () => {
       const api = new BalldontlieAPI({
         apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
       });
@@ -20,27 +22,94 @@ export default function App() {
         setPlayers(response.data);
         setFilteredPlayers(response.data); // Initialize filtered players
       } catch (err) {
-        setError("Failed to fetch players");
+        setError("Failed to fetch initial players");
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPlayers();
+    fetchInitialPlayers();
   }, []);
 
-  // Update the filtered players whenever the search query changes
-  useEffect(() => {
-    const filtered = players.filter((playerData) => {
-      const fullName =
-        `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
-      return fullName.includes(searchQuery.toLowerCase());
-    });
-    setFilteredPlayers(filtered);
-  }, [searchQuery, players]);
+  const fetchPlayerByName = async () => {
+    if (searchQuery.trim() === "") {
+      // Reset filtered players when the search bar is cleared
+      setFilteredPlayers(players);
+      setSelectedPlayerId(null);
+      return;
+    }
 
-  // Function to dynamically filter applicable stats
+    const query = searchQuery.toLowerCase().trim();
+
+    // Check cache
+    if (cache[query]) {
+      console.log("Serving from cache:", cache[query]);
+      setFilteredPlayers(cache[query]);
+      return;
+    }
+
+    const api = new BalldontlieAPI({
+      apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
+    });
+
+    try {
+      setLoading(true);
+      const response = await api.nfl.getPlayers({ search: query });
+      const foundPlayers = response.data;
+
+      if (foundPlayers.length > 0) {
+        // Fetch stats for found players
+        const statsResponses = await Promise.all(
+          foundPlayers.map((player) =>
+            api.nfl.getSeasonStats({
+              player_ids: [player.id],
+              season: 2024,
+            })
+          )
+        );
+
+        // Combine player and stats data
+        const combinedData = statsResponses.map((statsResponse, index) => {
+          const playerStats = statsResponse.data[0] || {}; // Default to an empty object if no stats found
+          return {
+            ...playerStats,
+            player: foundPlayers[index],
+          };
+        });
+
+        setFilteredPlayers(combinedData);
+
+        // Cache the result
+        setCache((prevCache) => ({
+          ...prevCache,
+          [query]: combinedData,
+        }));
+
+        // Save player ID if exactly one player matches
+        if (combinedData.length === 1) {
+          setSelectedPlayerId(combinedData[0].player.id);
+        } else {
+          setSelectedPlayerId(null);
+        }
+      } else {
+        setFilteredPlayers([]);
+        setSelectedPlayerId(null);
+      }
+    } catch (err) {
+      setError("Failed to fetch player by name");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      fetchPlayerByName(); // Trigger fetch when Enter is pressed
+    }
+  };
+
   const getApplicableStats = (playerData) => {
     const stats = {
       "Games Played": playerData.games_played,
@@ -80,6 +149,7 @@ export default function App() {
         placeholder="Search for a player..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyDown={handleKeyDown} // Listen for Enter key press
         style={{
           padding: "10px",
           margin: "10px 0",
@@ -114,7 +184,7 @@ export default function App() {
                 <strong>Age:</strong> {playerData.player.age}
               </p>
 
-              <h3>Stats for Season {playerData.season}</h3>
+              <h3>Stats for Season 2024</h3>
               <ul>
                 {getApplicableStats(playerData).map(([statName, statValue]) => (
                   <li key={statName}>
