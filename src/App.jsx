@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { BalldontlieAPI } from "@balldontlie/sdk";
+import "./App.css";
 
-export default function App() {
+export default function PlayerSearch({ onPlayerSelect }) {
+  // Added `onPlayerSelect` prop
   const [players, setPlayers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredPlayers, setFilteredPlayers] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,7 +21,6 @@ export default function App() {
           season: 2024,
         });
         setPlayers(response.data);
-        setFilteredPlayers(response.data); // Initialize filtered players
       } catch (err) {
         setError("Failed to fetch players");
         console.error(err);
@@ -30,17 +32,34 @@ export default function App() {
     fetchPlayers();
   }, []);
 
-  // Update the filtered players whenever the search query changes
-  useEffect(() => {
-    const filtered = players.filter((playerData) => {
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+
+    if (query.trim() === "") {
+      setSuggestions([]);
+      return;
+    }
+
+    const filteredSuggestions = players.filter((playerData) => {
       const fullName =
         `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
-      return fullName.includes(searchQuery.toLowerCase());
+      return fullName.includes(query.toLowerCase());
     });
-    setFilteredPlayers(filtered);
-  }, [searchQuery, players]);
 
-  // Function to dynamically filter applicable stats
+    setSuggestions(filteredSuggestions.slice(0, 5)); // Limit to 5 suggestions
+  };
+
+  const handleSuggestionClick = (playerData) => {
+    setSelectedPlayer(playerData);
+    setSearchQuery(
+      `${playerData.player.first_name} ${playerData.player.last_name}`
+    );
+    setSuggestions([]);
+    if (onPlayerSelect) {
+      onPlayerSelect(playerData); // Pass the selected player to the parent
+    }
+  };
+
   const getApplicableStats = (playerData) => {
     const stats = {
       "Games Played": playerData.games_played,
@@ -56,7 +75,6 @@ export default function App() {
       Receptions: playerData.receptions,
     };
 
-    // Filter out null or undefined stats
     return Object.entries(stats).filter(
       ([key, value]) => value !== null && value !== undefined
     );
@@ -71,59 +89,39 @@ export default function App() {
   }
 
   return (
-    <div>
-      <h1>Player Stats</h1>
-
-      {/* Search Bar */}
+    <div className="player-section">
       <input
         type="text"
+        className="search-bar"
         placeholder="Search for a player..."
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        style={{
-          padding: "10px",
-          margin: "10px 0",
-          width: "100%",
-          fontSize: "16px",
-        }}
+        onChange={(e) => handleSearchChange(e.target.value)}
       />
-
-      {filteredPlayers.length === 0 ? (
-        <p>No players found for the search term.</p>
-      ) : (
-        <div>
-          {filteredPlayers.map((playerData) => (
-            <div key={playerData.player.id}>
-              <h2>
-                {playerData.player.first_name} {playerData.player.last_name} -{" "}
-                {playerData.player.position}
-              </h2>
-              <p>
-                <strong>Height:</strong> {playerData.player.height}
-              </p>
-              <p>
-                <strong>Weight:</strong> {playerData.player.weight}
-              </p>
-              <p>
-                <strong>College:</strong> {playerData.player.college}
-              </p>
-              <p>
-                <strong>Experience:</strong> {playerData.player.experience}
-              </p>
-              <p>
-                <strong>Age:</strong> {playerData.player.age}
-              </p>
-
-              <h3>Stats for Season {playerData.season}</h3>
-              <ul>
-                {getApplicableStats(playerData).map(([statName, statValue]) => (
-                  <li key={statName}>
-                    <strong>{statName}:</strong> {statValue}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      {suggestions.length > 0 && (
+        <ul className="suggestions">
+          {suggestions.map((playerData) => (
+            <li
+              key={playerData.player.id}
+              onClick={() => handleSuggestionClick(playerData)}
+            >
+              {playerData.player.first_name} {playerData.player.last_name}
+            </li>
           ))}
+        </ul>
+      )}
+      {selectedPlayer && (
+        <div className="player-stats">
+          <h2>
+            {selectedPlayer.player.first_name} {selectedPlayer.player.last_name}{" "}
+            - {selectedPlayer.player.position}
+          </h2>
+          <ul>
+            {getApplicableStats(selectedPlayer).map(([statName, statValue]) => (
+              <li key={statName}>
+                <strong>{statName}:</strong> {statValue}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
