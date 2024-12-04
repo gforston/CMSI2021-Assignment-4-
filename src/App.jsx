@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { BalldontlieAPI } from "@balldontlie/sdk";
 import SearchBar from "./SearchBar"; // Import the SearchBar component
+import api from "./services/apiService";
+
 
 export default function App() {
   const [players, setPlayers] = useState([]);
@@ -13,11 +14,7 @@ export default function App() {
 
   useEffect(() => {
     const fetchInitialPlayers = async () => {
-      const api = new BalldontlieAPI({
-        //TODO:
-        //hide the api key and remove it from github
-        apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
-      });
+      
       try {
         const response = await api.nfl.getSeasonStats({
           season: 2024,
@@ -53,10 +50,6 @@ export default function App() {
       setFilteredPlayers(cache[query]);
       return;
     }
-
-    const api = new BalldontlieAPI({
-      apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
-    });
 
     try {
       setLoading(true);
