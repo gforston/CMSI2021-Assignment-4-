@@ -66,14 +66,11 @@ export default function App() {
       let response;
 
       if (queryParts.length === 1) {
-        console.log("length 1");
-        console.log(query)
         // Only search by either first name or last name
         response = await api.nfl.getPlayers({ search: query });
       } else if (queryParts.length >= 2) {
         // Search by first and last name individually
         const [firstName, lastName] = queryParts;
-        console.log(firstName, lastName);
         response = await api.nfl.getPlayers({
           first_name: firstName,
           last_name: lastName,
