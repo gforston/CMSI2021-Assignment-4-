@@ -13,6 +13,7 @@ export default function SearchBar({ searchQuery, setSearchQuery, fetchPlayerByNa
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
       onKeyDown={handleKeyDown} // Listen for Enter key press
+      //remove this and add css
       style={{
         padding: "10px",
         margin: "10px 0",
