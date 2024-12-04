@@ -1,7 +1,6 @@
-// SearchBar.js
 import React from "react";
 
-const SearchBar = ({ searchQuery, setSearchQuery, fetchPlayerByName}) => {
+export default function SearchBar({ searchQuery, setSearchQuery, fetchPlayerByName }) {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       fetchPlayerByName(); // Trigger fetch when Enter is pressed
@@ -23,5 +22,4 @@ const SearchBar = ({ searchQuery, setSearchQuery, fetchPlayerByName}) => {
     />
   );
 };
-export default SearchBar;
 
