@@ -16,7 +16,7 @@ export default function App() {
           season: 2024,
         });
         setPlayers(response.data);
-        setFilteredPlayers(response.data); 
+        setFilteredPlayers(response.data); // Initialize filtered players
       } catch (err) {
         setError("Failed to fetch players");
         console.error(err);
@@ -28,6 +28,7 @@ export default function App() {
     fetchPlayers();
   }, []);
 
+  // Update the filtered players whenever the search query changes
   useEffect(() => {
     const filtered = players.filter((playerData) => {
       const fullName = `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
