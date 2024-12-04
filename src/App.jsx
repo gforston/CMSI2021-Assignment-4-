@@ -57,11 +57,17 @@ export default function App() {
 
               <h3>Stats for Season {playerData.season}</h3>
               <p><strong>Games Played:</strong> {playerData.games_played}</p>
-              <p><strong>Rushing Yards:</strong> {playerData.rushing_yards} yards</p>
+
+              <p><strong>Passing Yards:</strong> {playerData.passing_yards} </p>
+              <p><strong>Passing Yards Per Game:</strong> {playerData.passing_yards_per_game} </p>
+              <p><strong>Passing Touchdowns:</strong> {playerData.passing_touchdowns}</p>
+              <p><strong>Interceptions:</strong> {playerData.passing_interceptions}</p>
+
+              <p><strong>Rushing Yards:</strong> {playerData.rushing_yards} </p>
               <p><strong>Rushing Touchdowns:</strong> {playerData.rushing_touchdowns}</p>
               <p><strong>Rushing Attempts:</strong> {playerData.rushing_attempts}</p>
 
-              <p><strong>Receiving Yards:</strong> {playerData.receiving_yards} yards</p>
+              <p><strong>Receiving Yards:</strong> {playerData.receiving_yards} </p>
               <p><strong>Receiving Touchdowns:</strong> {playerData.receiving_touchdowns}</p>
               <p><strong>Receptions:</strong> {playerData.receptions}</p>
             </div>
