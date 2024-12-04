@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BalldontlieAPI } from "@balldontlie/sdk";
+import SearchBar from "./SearchBar"; // Import the SearchBar component
 
 export default function App() {
   const [players, setPlayers] = useState([]);
@@ -106,12 +107,6 @@ export default function App() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      fetchPlayerByName(); // Trigger fetch when Enter is pressed
-    }
-  };
-
   const getApplicableStats = (playerData) => {
     const stats = {
       "Games Played": playerData.games_played,
@@ -148,20 +143,10 @@ export default function App() {
       <h1>Player Stats</h1>
 
       {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search for a player..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyDown={handleKeyDown} // Listen for Enter key press
-
-        //TODO: remove this and add to a css file
-        style={{
-          padding: "10px",
-          margin: "10px 0",
-          width: "100%",
-          fontSize: "16px",
-        }}
+      <SearchBar 
+        searchQuery={searchQuery} 
+        setSearchQuery={setSearchQuery} 
+        fetchPlayerByName={fetchPlayerByName} // Pass the function as a prop
       />
 
       {filteredPlayers.length === 0 ? (
