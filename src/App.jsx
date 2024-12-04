@@ -3,7 +3,7 @@ import { BalldontlieAPI } from "@balldontlie/sdk";
 import Entry from "./Entry.jsx";
 
 export default function App() {
-  const [players, setPlayers] = useState([]);
+  const [player, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,11 +13,8 @@ export default function App() {
       const api = new BalldontlieAPI({ apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17" });
       try {
         // Fetch players (you can adjust the parameters as needed)
-        const response = await api.nfl.getStats({
-          per_page: 100,  // Number of players per page
-          page: 1,       // Which page to fetch
-          //team_ids: [1] // Optional: fetch players from a specific team (e.g., team ID 1)
-          //search: {word}
+        const response = await api.nfl.getSeasonStats({
+          season: 2024,
         });
         console.log(response)
         setPlayers(response.data); // Save fetched players
@@ -43,25 +40,34 @@ export default function App() {
   return (
     <div>
       <h1>Player Stats</h1>
-      <ul>
-        {players.map((player) => (
-          <li key={player.player.id}>
-            <h2>
-              {player.player.first_name} {player.player.last_name} -{" "}
-              {player.player.position} ({player.team.full_name})
-            </h2>
-            <p>
-              Passing Yards: {player.passing_yards} yards | Passing
-              Touchdowns: {player.passing_touchdowns}
-              receiving_yards {player.receiving_yards}
-            </p>
-            <p>
-              Rushing Yards: {player.rushing_yards} yards | Rushing
-              Touchdowns: {player.rushing_touchdowns}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {player.length === 0 ? (
+        <p>No players found.</p>
+      ) : (
+        <div>
+          {player.map((playerData) => (
+            <div key={playerData.player.id}>
+              <h2>
+                {playerData.player.first_name} {playerData.player.last_name} - {playerData.player.position}
+              </h2>
+              <p><strong>Height:</strong> {playerData.player.height}</p>
+              <p><strong>Weight:</strong> {playerData.player.weight}</p>
+              <p><strong>College:</strong> {playerData.player.college}</p>
+              <p><strong>Experience:</strong> {playerData.player.experience}</p>
+              <p><strong>Age:</strong> {playerData.player.age}</p>
+
+              <h3>Stats for Season {playerData.season}</h3>
+              <p><strong>Games Played:</strong> {playerData.games_played}</p>
+              <p><strong>Rushing Yards:</strong> {playerData.rushing_yards} yards</p>
+              <p><strong>Rushing Touchdowns:</strong> {playerData.rushing_touchdowns}</p>
+              <p><strong>Rushing Attempts:</strong> {playerData.rushing_attempts}</p>
+
+              <p><strong>Receiving Yards:</strong> {playerData.receiving_yards} yards</p>
+              <p><strong>Receiving Touchdowns:</strong> {playerData.receiving_touchdowns}</p>
+              <p><strong>Receptions:</strong> {playerData.receptions}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
