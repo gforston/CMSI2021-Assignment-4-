@@ -10,7 +10,9 @@ export default function App() {
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const api = new BalldontlieAPI({ apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17" });
+      const api = new BalldontlieAPI({
+        apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
+      });
       try {
         const response = await api.nfl.getSeasonStats({
           season: 2024,
@@ -31,11 +33,34 @@ export default function App() {
   // Update the filtered players whenever the search query changes
   useEffect(() => {
     const filtered = players.filter((playerData) => {
-      const fullName = `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
+      const fullName =
+        `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
       return fullName.includes(searchQuery.toLowerCase());
     });
     setFilteredPlayers(filtered);
   }, [searchQuery, players]);
+
+  // Function to dynamically filter applicable stats
+  const getApplicableStats = (playerData) => {
+    const stats = {
+      "Games Played": playerData.games_played,
+      "Passing Yards": playerData.passing_yards,
+      "Passing Yards Per Game": playerData.passing_yards_per_game,
+      "Passing Touchdowns": playerData.passing_touchdowns,
+      Interceptions: playerData.passing_interceptions,
+      "Rushing Yards": playerData.rushing_yards,
+      "Rushing Touchdowns": playerData.rushing_touchdowns,
+      "Rushing Attempts": playerData.rushing_attempts,
+      "Receiving Yards": playerData.receiving_yards,
+      "Receiving Touchdowns": playerData.receiving_touchdowns,
+      Receptions: playerData.receptions,
+    };
+
+    // Filter out null or undefined stats
+    return Object.entries(stats).filter(
+      ([key, value]) => value !== null && value !== undefined
+    );
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -48,7 +73,7 @@ export default function App() {
   return (
     <div>
       <h1>Player Stats</h1>
-      
+
       {/* Search Bar */}
       <input
         type="text"
@@ -70,29 +95,33 @@ export default function App() {
           {filteredPlayers.map((playerData) => (
             <div key={playerData.player.id}>
               <h2>
-                {playerData.player.first_name} {playerData.player.last_name} - {playerData.player.position}
+                {playerData.player.first_name} {playerData.player.last_name} -{" "}
+                {playerData.player.position}
               </h2>
-              <p><strong>Height:</strong> {playerData.player.height}</p>
-              <p><strong>Weight:</strong> {playerData.player.weight}</p>
-              <p><strong>College:</strong> {playerData.player.college}</p>
-              <p><strong>Experience:</strong> {playerData.player.experience}</p>
-              <p><strong>Age:</strong> {playerData.player.age}</p>
+              <p>
+                <strong>Height:</strong> {playerData.player.height}
+              </p>
+              <p>
+                <strong>Weight:</strong> {playerData.player.weight}
+              </p>
+              <p>
+                <strong>College:</strong> {playerData.player.college}
+              </p>
+              <p>
+                <strong>Experience:</strong> {playerData.player.experience}
+              </p>
+              <p>
+                <strong>Age:</strong> {playerData.player.age}
+              </p>
 
               <h3>Stats for Season {playerData.season}</h3>
-              <p><strong>Games Played:</strong> {playerData.games_played}</p>
-
-              <p><strong>Passing Yards:</strong> {playerData.passing_yards} </p>
-              <p><strong>Passing Yards Per Game:</strong> {playerData.passing_yards_per_game} </p>
-              <p><strong>Passing Touchdowns:</strong> {playerData.passing_touchdowns}</p>
-              <p><strong>Interceptions:</strong> {playerData.passing_interceptions}</p>
-
-              <p><strong>Rushing Yards:</strong> {playerData.rushing_yards} </p>
-              <p><strong>Rushing Touchdowns:</strong> {playerData.rushing_touchdowns}</p>
-              <p><strong>Rushing Attempts:</strong> {playerData.rushing_attempts}</p>
-
-              <p><strong>Receiving Yards:</strong> {playerData.receiving_yards} </p>
-              <p><strong>Receiving Touchdowns:</strong> {playerData.receiving_touchdowns}</p>
-              <p><strong>Receptions:</strong> {playerData.receptions}</p>
+              <ul>
+                {getApplicableStats(playerData).map(([statName, statValue]) => (
+                  <li key={statName}>
+                    <strong>{statName}:</strong> {statValue}
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
