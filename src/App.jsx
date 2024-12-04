@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { BalldontlieAPI } from "@balldontlie/sdk";
-import Entry from "./Entry.jsx";
 
 export default function App() {
-  const [player, setPlayers] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredPlayers, setFilteredPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPlayers = async () => {
-      const word = encodeURIComponent(name.toLowerCase());
       const api = new BalldontlieAPI({ apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17" });
       try {
-        // Fetch players (you can adjust the parameters as needed)
         const response = await api.nfl.getSeasonStats({
           season: 2024,
         });
-        console.log(response)
-        setPlayers(response.data); // Save fetched players
+        setPlayers(response.data);
+        setFilteredPlayers(response.data); 
       } catch (err) {
         setError("Failed to fetch players");
         console.error(err);
@@ -28,6 +27,14 @@ export default function App() {
 
     fetchPlayers();
   }, []);
+
+  useEffect(() => {
+    const filtered = players.filter((playerData) => {
+      const fullName = `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
+      return fullName.includes(searchQuery.toLowerCase());
+    });
+    setFilteredPlayers(filtered);
+  }, [searchQuery, players]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -40,11 +47,26 @@ export default function App() {
   return (
     <div>
       <h1>Player Stats</h1>
-      {player.length === 0 ? (
-        <p>No players found.</p>
+      
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search for a player..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{
+          padding: "10px",
+          margin: "10px 0",
+          width: "100%",
+          fontSize: "16px",
+        }}
+      />
+
+      {filteredPlayers.length === 0 ? (
+        <p>No players found for the search term.</p>
       ) : (
         <div>
-          {player.map((playerData) => (
+          {filteredPlayers.map((playerData) => (
             <div key={playerData.player.id}>
               <h2>
                 {playerData.player.first_name} {playerData.player.last_name} - {playerData.player.position}
@@ -76,7 +98,4 @@ export default function App() {
       )}
     </div>
   );
-};
-
-
-
+}
