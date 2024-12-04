@@ -21,6 +21,8 @@ export default function App() {
         });
         setPlayers(response.data);
         setFilteredPlayers(response.data); // Initialize filtered players
+
+        //error stuff
       } catch (err) {
         setError("Failed to fetch initial players");
         console.error(err);
@@ -116,13 +118,13 @@ export default function App() {
       "Passing Yards": playerData.passing_yards,
       "Passing Yards Per Game": playerData.passing_yards_per_game,
       "Passing Touchdowns": playerData.passing_touchdowns,
-      Interceptions: playerData.passing_interceptions,
+      "Interceptions": playerData.passing_interceptions,
       "Rushing Yards": playerData.rushing_yards,
       "Rushing Touchdowns": playerData.rushing_touchdowns,
       "Rushing Attempts": playerData.rushing_attempts,
       "Receiving Yards": playerData.receiving_yards,
       "Receiving Touchdowns": playerData.receiving_touchdowns,
-      Receptions: playerData.receptions,
+      "Receptions": playerData.receptions,
     };
 
     // Filter out null or undefined stats
@@ -131,6 +133,8 @@ export default function App() {
     );
   };
 
+
+  //displaying stuff:
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -138,7 +142,7 @@ export default function App() {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
+  
   return (
     <div>
       <h1>Player Stats</h1>
@@ -150,6 +154,8 @@ export default function App() {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={handleKeyDown} // Listen for Enter key press
+
+        //TODO: remove this and add to a css file
         style={{
           padding: "10px",
           margin: "10px 0",
