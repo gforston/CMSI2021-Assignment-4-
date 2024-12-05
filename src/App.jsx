@@ -3,43 +3,67 @@ import { BalldontlieAPI } from "@balldontlie/sdk";
 import "./App.css";
 
 export default function PlayerSearch({ onPlayerSelect }) {
-  // Added `onPlayerSelect` prop
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState([]); // Players fetched from the initial API
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      const api = new BalldontlieAPI({
-        apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
-      });
-      try {
-        const response = await api.nfl.getSeasonStats({
-          season: 2024,
-        });
-        setPlayers(response.data);
-      } catch (err) {
-        setError("Failed to fetch players");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const api = new BalldontlieAPI({
+    apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
+  });
 
-    fetchPlayers();
-  }, []);
+  const fetchPlayerByName = async (query) => {
+    try {
+      setLoading(true);
+      const response = await api.nfl.getPlayers({ search: query });
+      const foundPlayers = response.data;
+
+      if (foundPlayers.length > 0) {
+        // Fetch stats for found players
+        const statsResponses = await Promise.all(
+          foundPlayers.map((player) =>
+            api.nfl.getSeasonStats({
+              player_ids: [player.id],
+              season: 2024,
+            })
+          )
+        );
+
+        // Combine player and stats data
+        const combinedData = statsResponses.map((statsResponse, index) => {
+          const playerStats = statsResponse.data[0] || {}; // Default to an empty object if no stats found
+          return {
+            ...playerStats,
+            player: foundPlayers[index],
+          };
+        });
+
+        setPlayers(combinedData);
+        setSuggestions(combinedData.slice(0, 5)); // Limit to 5 suggestions
+      } else {
+        setPlayers([]);
+        setSuggestions([]);
+      }
+    } catch (err) {
+      setError("Failed to fetch players by name");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
 
+    // Clear suggestions if search query is empty
     if (query.trim() === "") {
       setSuggestions([]);
       return;
     }
 
+    // Local filtering for suggestions
     const filteredSuggestions = players.filter((playerData) => {
       const fullName =
         `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
@@ -47,6 +71,12 @@ export default function PlayerSearch({ onPlayerSelect }) {
     });
 
     setSuggestions(filteredSuggestions.slice(0, 5)); // Limit to 5 suggestions
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      fetchPlayerByName(searchQuery.trim());
+    }
   };
 
   const handleSuggestionClick = (playerData) => {
@@ -96,6 +126,7 @@ export default function PlayerSearch({ onPlayerSelect }) {
         placeholder="Search for a player..."
         value={searchQuery}
         onChange={(e) => handleSearchChange(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       {suggestions.length > 0 && (
         <ul className="suggestions">
