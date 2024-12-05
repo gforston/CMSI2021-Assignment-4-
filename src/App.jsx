@@ -1,9 +1,8 @@
-// src/components/PlayerSearch.js
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import api from "./services/apiService";
 import { getFromCache, setCache } from "./cache";
-
+import SearchBar from "./SearchBar"; // Import the new SearchBar component
 
 export default function PlayerSearch({ onPlayerSelect }) {
   const [players, setPlayers] = useState([]); // Players fetched from the initial API
@@ -12,7 +11,6 @@ export default function PlayerSearch({ onPlayerSelect }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
 
   // Function to fetch player by name or first_name and last_name
   const fetchPlayerByName = async (query) => {
@@ -109,21 +107,24 @@ export default function PlayerSearch({ onPlayerSelect }) {
   };
 
   const handleSuggestionClick = (playerData) => {
-    setSelectedPlayer(playerData); // Store selected player data
-    setSearchQuery(
-      `${playerData.player.first_name} ${playerData.player.last_name}`
-    ); // Update search bar text
-    setSuggestions([]); // Clear suggestions
+    if (playerData && playerData.player) {
+      setSelectedPlayer(playerData); // Store selected player data
+      setSearchQuery(
+        `${playerData.player.first_name} ${playerData.player.last_name}`
+      ); // Update search bar text
+      setSuggestions([]); // Clear suggestions
   
-    if (onPlayerSelect) {
-      onPlayerSelect({
-        playerId: playerData.player.id, // Pass playerId to parent
-        playerData,
-      });
+      if (onPlayerSelect) {
+        onPlayerSelect({
+          playerId: playerData.player.id, // Pass playerId to parent
+          playerData,
+        });
+      }
+    } else {
+      console.error('Player data is missing');
     }
   };
   
-
   const getApplicableStats = (playerData) => {
     const stats = {
       "Games Played": playerData.games_played,
@@ -153,28 +154,14 @@ export default function PlayerSearch({ onPlayerSelect }) {
   }
 
   return (
-    
-    <div className="player-section">
-      <input
-        type="text"
-        className="search-bar"
-        placeholder="Search for a player..."
-        value={searchQuery}
-        onChange={(e) => handleSearchChange(e.target.value)}
+    <div className="player-search">
+      <SearchBar
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
         onKeyDown={handleKeyDown}
+        suggestions={suggestions}
+        onSuggestionClick={handleSuggestionClick}
       />
-      {suggestions.length > 0 && (
-        <ul className="suggestions">
-          {suggestions.map((playerData) => (
-            <li
-              key={playerData.player.id}
-              onClick={() => handleSuggestionClick(playerData)}
-            >
-              {playerData.player.first_name} {playerData.player.last_name}
-            </li>
-          ))}
-        </ul>
-      )}
       {selectedPlayer && (
         <div className="player-stats">
           <h2>

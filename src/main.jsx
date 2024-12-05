@@ -97,15 +97,20 @@ function Main() {
                   <th>Fantasy Points Per Game</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr className={playerOneIsBetter ? "highlight" : ""}>
-                  <td>{`${playerOne.player.first_name} ${playerOne.player.last_name}`}</td>
-                  <td>{playerOnePoints}</td>
-                </tr>
-                <tr className={playerTwoIsBetter ? "highlight" : ""}>
-                  <td>{`${playerTwo.player.first_name} ${playerTwo.player.last_name}`}</td>
-                  <td>{playerTwoPoints}</td>
-                </tr>
+                <tbody>
+                {playerOne && playerOne.player ? (
+                  <tr className={playerOneIsBetter ? "highlight" : ""}>
+                    <td>{`${playerOne.player.first_name} ${playerOne.player.last_name}`}</td>
+                    <td>{playerOnePoints}</td>
+                  </tr>
+                ) : null}
+
+                {playerTwo && playerTwo.player ? (
+                  <tr className={playerTwoIsBetter ? "highlight" : ""}>
+                    <td>{`${playerTwo.player.first_name} ${playerTwo.player.last_name}`}</td>
+                    <td>{playerTwoPoints}</td>
+                  </tr>
+                ) : null}
               </tbody>
             </table>
           </div>

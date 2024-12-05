@@ -1,26 +1,30 @@
 import React from "react";
+import "./App.css";
 
-export default function SearchBar({ searchQuery, setSearchQuery, fetchPlayerByName }) {
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      fetchPlayerByName(); // Trigger fetch when Enter is pressed
-    }
-  };
+// fix the css
+export default function SearchBar({ searchQuery, onSearchChange, onKeyDown, suggestions, onSuggestionClick }) {
   return (
-    <input
-      type="text"
-      placeholder="Search for a player..."
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      onKeyDown={handleKeyDown} // Listen for Enter key press
-      //remove this and add css
-      style={{
-        padding: "10px",
-        margin: "10px 0",
-        width: "100%",
-        fontSize: "16px",
-      }}
-    />
+    <div className="player-section">
+      <input
+        type="text"
+        className="search-bar"
+        placeholder="Search for a player..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
+        onKeyDown={onKeyDown}
+      />
+      {suggestions.length > 0 && (
+        <ul className="suggestions">
+          {suggestions.map((playerData) => (
+            <li
+              key={playerData.player.id}
+              onClick={() => onSuggestionClick(playerData)}
+            >
+              {playerData.player.first_name} {playerData.player.last_name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
-};
-
+}
