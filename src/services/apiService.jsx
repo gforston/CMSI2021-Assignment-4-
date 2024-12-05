@@ -1,7 +1,8 @@
 import { BalldontlieAPI } from "@balldontlie/sdk";
+const key = import.meta.env.VITE_API_KEY;
 const api = new BalldontlieAPI({
-    //TODO:
     //hide the api key and remove it from github
-    apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
+    //add key to .env to do stuff
+    apiKey: key,
   });
 export default api;

@@ -1,6 +1,8 @@
+// src/components/PlayerSearch.js
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import api from "./services/apiService"
+import api from "./services/apiService";
+import { getFromCache, setCache } from "./cache";
 
 export default function PlayerSearch({ onPlayerSelect }) {
   const [players, setPlayers] = useState([]); // Players fetched from the initial API
@@ -10,12 +12,36 @@ export default function PlayerSearch({ onPlayerSelect }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
-
+  // Function to fetch player by name or first_name and last_name
   const fetchPlayerByName = async (query) => {
     try {
       setLoading(true);
-      const response = await api.nfl.getPlayers({ search: query });
+
+      // Check if the query result is cached
+      const cachedData = getFromCache(query);
+      if (cachedData) {
+        // If cached, use the cached data
+        setPlayers(cachedData);
+        setSuggestions(cachedData.slice(0, 5)); // Limit to 5 suggestions
+        setLoading(false); // Stop loading as the data is from cache
+        return;
+      }
+
+      // Split the query into first_name and last_name if both are present
+      const [firstName, lastName] = query.trim().split(" ");
+
+      let response;
+      if (firstName && lastName) {
+        // If both first_name and last_name are provided, use them in the API request
+        response = await api.nfl.getPlayers({
+          first_name: firstName,
+          last_name: lastName,
+        });
+      } else {
+        // Otherwise, use the search parameter as usual
+        response = await api.nfl.getPlayers({ search: query });
+      }
+
       const foundPlayers = response.data;
 
       if (foundPlayers.length > 0) {
@@ -37,6 +63,9 @@ export default function PlayerSearch({ onPlayerSelect }) {
             player: foundPlayers[index],
           };
         });
+
+        // Cache the result for future use
+        setCache(query, combinedData);
 
         setPlayers(combinedData);
         setSuggestions(combinedData.slice(0, 5)); // Limit to 5 suggestions
@@ -94,13 +123,13 @@ export default function PlayerSearch({ onPlayerSelect }) {
       "Passing Yards": playerData.passing_yards,
       "Passing Yards Per Game": playerData.passing_yards_per_game,
       "Passing Touchdowns": playerData.passing_touchdowns,
-      Interceptions: playerData.passing_interceptions,
+      "Interceptions": playerData.passing_interceptions,
       "Rushing Yards": playerData.rushing_yards,
       "Rushing Touchdowns": playerData.rushing_touchdowns,
       "Rushing Attempts": playerData.rushing_attempts,
       "Receiving Yards": playerData.receiving_yards,
       "Receiving Touchdowns": playerData.receiving_touchdowns,
-      Receptions: playerData.receptions,
+      "Receptions": playerData.receptions,
     };
 
     return Object.entries(stats).filter(
