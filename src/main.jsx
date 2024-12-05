@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import PlayerSearch from "./App"; // Import the PlayerSearch component
 import "./App.css";
+import { SignIn, SignOut } from "./Auth"
+import { useAuthentication } from "./services/authService"
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
   const [playerTwo, setPlayerTwo] = useState(null);
+  const user = useAuthentication()
 
   // Helper function to calculate fantasy points
   const calculateFantasyPoints = (playerData) => {
@@ -37,6 +40,11 @@ function Main() {
 
   return (
     <div className="comparison-container">
+      <header>
+        {/* Fix the css with this sign in bar stuff */}
+        <h1 className="signIn bar">SignIn bar {!user ? <SignIn /> : <SignOut />}</h1>
+        
+      </header>
       <h1>Player Comparison</h1>
 
       <div className="player-search-sections">

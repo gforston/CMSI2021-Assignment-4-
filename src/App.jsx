@@ -4,6 +4,7 @@ import "./App.css";
 import api from "./services/apiService";
 import { getFromCache, setCache } from "./cache";
 
+
 export default function PlayerSearch({ onPlayerSelect }) {
   const [players, setPlayers] = useState([]); // Players fetched from the initial API
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,6 +12,7 @@ export default function PlayerSearch({ onPlayerSelect }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
 
   // Function to fetch player by name or first_name and last_name
   const fetchPlayerByName = async (query) => {
@@ -146,6 +148,7 @@ export default function PlayerSearch({ onPlayerSelect }) {
   }
 
   return (
+    
     <div className="player-section">
       <input
         type="text"

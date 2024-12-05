@@ -14,6 +14,10 @@ export function loggedInUserDisplayName() {
   return auth.currentUser.displayName
 }
 
+export function loggedInUserPhoto() {
+  return auth.currentUser.photoURL
+}
+
 export function useAuthentication() {
   const [user, setUser] = useState(null)
   useEffect(() => {
