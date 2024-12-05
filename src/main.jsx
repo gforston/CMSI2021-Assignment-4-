@@ -2,13 +2,41 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import PlayerSearch from "./App"; // Import the PlayerSearch component
 import "./App.css";
-import { SignIn, SignOut } from "./Auth"
-import { useAuthentication } from "./services/authService"
+import { SignIn, SignOut } from "./Auth";
+import { useAuthentication } from "./services/authService";
+import  {db} from "./firebaseConfig"; // Import Firestore
+import { collection, addDoc } from "firebase/firestore"; // Firestore methods
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
   const [playerTwo, setPlayerTwo] = useState(null);
-  const user = useAuthentication()
+  const user = useAuthentication();
+
+  // Save selected player team to Firebase
+  const savePlayerToFirebase = async (player, playerLabel) => {
+    if (!player) return;
+  
+    try {
+      await addDoc(collection(db, "playerTeams"), {
+        userId: user?.uid || "guest", // Include user ID if logged in
+        playerLabel,
+        playerId: player.playerId, // Save the playerId
+        playerName: `${player.playerData.player.first_name} ${player.playerData.player.last_name}`,
+        position: player.playerData.player.position,
+        timestamp: new Date(),
+      });
+      console.log(`Saved ${playerLabel} to Firebase successfully.`);
+    } catch (error) {
+      console.error(`Error saving ${playerLabel}:`, error);
+    }
+  };
+  
+
+  // Save players when both are selected
+  React.useEffect(() => {
+    if (playerOne) savePlayerToFirebase(playerOne, "Player One");
+    if (playerTwo) savePlayerToFirebase(playerTwo, "Player Two");
+  }, [playerOne, playerTwo]);
 
   // Helper function to calculate fantasy points
   const calculateFantasyPoints = (playerData) => {
@@ -41,9 +69,9 @@ function Main() {
   return (
     <div className="comparison-container">
       <header>
-        {/* Fix the css with this sign in bar stuff */}
-        <h1 className="signIn bar">SignIn bar {!user ? <SignIn /> : <SignOut />}</h1>
-        
+        <h1 className="signIn bar">
+          SignIn bar {!user ? <SignIn /> : <SignOut />}
+        </h1>
       </header>
       <h1>Player Comparison</h1>
 
@@ -89,9 +117,6 @@ function Main() {
   );
 }
 
-// Ensure consistent export
 export default Main;
 
-// React DOM rendering
 ReactDOM.render(<Main />, document.getElementById("root"));
-c

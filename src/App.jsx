@@ -109,15 +109,20 @@ export default function PlayerSearch({ onPlayerSelect }) {
   };
 
   const handleSuggestionClick = (playerData) => {
-    setSelectedPlayer(playerData);
+    setSelectedPlayer(playerData); // Store selected player data
     setSearchQuery(
       `${playerData.player.first_name} ${playerData.player.last_name}`
-    );
-    setSuggestions([]);
+    ); // Update search bar text
+    setSuggestions([]); // Clear suggestions
+  
     if (onPlayerSelect) {
-      onPlayerSelect(playerData); // Pass the selected player to the parent
+      onPlayerSelect({
+        playerId: playerData.player.id, // Pass playerId to parent
+        playerData,
+      });
     }
   };
+  
 
   const getApplicableStats = (playerData) => {
     const stats = {

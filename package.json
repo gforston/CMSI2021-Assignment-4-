@@ -9,6 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "contributors": [
+    {
+      "name": "Quinn Austin"
+    }
+  ],
   "dependencies": {
     "@balldontlie/sdk": "^1.1.2",
     "firebase": "^11.0.2",
