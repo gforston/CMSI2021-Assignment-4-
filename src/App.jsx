@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BalldontlieAPI } from "@balldontlie/sdk";
 import "./App.css";
+import api from "./services/apiService"
 
 export default function PlayerSearch({ onPlayerSelect }) {
   const [players, setPlayers] = useState([]); // Players fetched from the initial API
@@ -10,9 +10,7 @@ export default function PlayerSearch({ onPlayerSelect }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const api = new BalldontlieAPI({
-    apiKey: "138e5814-bfdf-4194-8aa6-8ff31cc3db17",
-  });
+
 
   const fetchPlayerByName = async (query) => {
     try {
