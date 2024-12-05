@@ -27,6 +27,14 @@ function Main() {
     return (points / playerData.games_played).toFixed(2); // Average points per game
   };
 
+  // Calculate fantasy points for each player
+  const playerOnePoints = playerOne ? parseFloat(calculateFantasyPoints(playerOne)) : 0;
+  const playerTwoPoints = playerTwo ? parseFloat(calculateFantasyPoints(playerTwo)) : 0;
+
+  // Determine which player has higher points
+  const playerOneIsBetter = playerOnePoints > playerTwoPoints;
+  const playerTwoIsBetter = playerTwoPoints > playerOnePoints;
+
   return (
     <div className="comparison-container">
       <h1>Player Comparison</h1>
@@ -54,13 +62,13 @@ function Main() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr className={playerOneIsBetter ? "highlight" : ""}>
                   <td>{`${playerOne.player.first_name} ${playerOne.player.last_name}`}</td>
-                  <td>{calculateFantasyPoints(playerOne)}</td>
+                  <td>{playerOnePoints}</td>
                 </tr>
-                <tr>
+                <tr className={playerTwoIsBetter ? "highlight" : ""}>
                   <td>{`${playerTwo.player.first_name} ${playerTwo.player.last_name}`}</td>
-                  <td>{calculateFantasyPoints(playerTwo)}</td>
+                  <td>{playerTwoPoints}</td>
                 </tr>
               </tbody>
             </table>
@@ -73,4 +81,8 @@ function Main() {
   );
 }
 
+// Ensure consistent export
+export default Main;
+
+// React DOM rendering
 ReactDOM.render(<Main />, document.getElementById("root"));
