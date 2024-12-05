@@ -57,6 +57,7 @@ h1 {
 h2 {
   color: #cfcfcf;
   text-align: center; 
+  margin-bottom: 20px; 
 }
 
 .player-search-sections {
@@ -130,23 +131,23 @@ h2 {
   padding: 20px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
   margin-top: auto;
+  text-align: center; 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
-  text-align: center; 
+}
 
 .comparison-table {
   width: 100%;
-  max-width: 500px; 
-  margin-top: 20px;
-  margin-right: 10px; 
-  border-collapse: collapse;
+  max-width: 600px;
+  margin-top: 10px;
+  margin-left: 200px; 
+  text-align: center; 
 }
 
 .comparison-table th,
 .comparison-table td {
   padding: 12px;
-  text-align: center;
 }
 
 .comparison-table th {
@@ -208,7 +209,7 @@ h2 {
   }
 
   .comparison-table {
-    width: 100%; 
-    margin-right: 0; 
+    width: 100%;
+    margin-left: 20; 
   }
 }
