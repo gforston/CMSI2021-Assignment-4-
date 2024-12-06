@@ -5,7 +5,7 @@ import "./App.css";
 import { SignIn, SignOut } from "./Auth";
 import { useAuthentication } from "./services/authService";
 import  {db} from "./firebaseConfig"; // Import Firestore
-import { collection, addDoc } from "firebase/firestore"; // Firestore methods
+import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore"; // Firestore methods
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
@@ -17,21 +17,47 @@ function Main() {
     if (!player) return;
   
     try {
-      await addDoc(collection(db, "playerTeams"), {
-        userId: user?.uid || "guest", // Include user ID if logged in
-        playerLabel,
-        playerId: player.playerId, // Save the playerId
-        playerName: `${player.playerData.player.first_name} ${player.playerData.player.last_name}`,
-        position: player.playerData.player.position,
-        timestamp: new Date(),
-      });
-      console.log(`Saved ${playerLabel} to Firebase successfully.`);
+      // Reference to the Firestore collection
+      const playerTeamsRef = collection(db, "playerTeams");
+  
+      // Query to check if a document exists for this user and playerLabel
+      const existingDocQuery = query(
+        playerTeamsRef,
+        where("userId", "==", user?.uid || "guest"),
+        where("playerLabel", "==", playerLabel)
+      );
+  
+      const querySnapshot = await getDocs(existingDocQuery);
+  
+      if (!querySnapshot.empty) {
+        // If the document exists, get its ID and update it
+        const docId = querySnapshot.docs[0].id;
+        await setDoc(doc(playerTeamsRef, docId), {
+          userId: user?.uid || "guest", // Include user ID if logged in
+          playerLabel,
+          playerId: player.playerId, // Save the playerId
+          playerName: `${player.playerData.player.first_name} ${player.playerData.player.last_name}`,
+          position: player.playerData.player.position,
+          timestamp: new Date(),
+        });
+        console.log(`Updated ${playerLabel} in Firebase successfully.`);
+      } else {
+        // If the document doesn't exist, create a new one
+        await setDoc(doc(playerTeamsRef), {
+          userId: user?.uid || "guest", // Include user ID if logged in
+          playerLabel,
+          playerId: player.playerId, // Save the playerId
+          playerName: `${player.playerData.player.first_name} ${player.playerData.player.last_name}`,
+          position: player.playerData.player.position,
+          timestamp: new Date(),
+        });
+        console.log(`Created ${playerLabel} in Firebase successfully.`);
+      }
     } catch (error) {
-      console.error(`Error saving ${playerLabel}:`, error);
+      console.error(`Error saving or updating ${playerLabel}:`, error);
     }
   };
   
-
   // Save players when both are selected
   React.useEffect(() => {
     if (playerOne) savePlayerToFirebase(playerOne, "Player One");
@@ -59,8 +85,8 @@ function Main() {
   };
 
   // Calculate fantasy points for each player
-  const playerOnePoints = playerOne ? parseFloat(calculateFantasyPoints(playerOne)) : 0;
-  const playerTwoPoints = playerTwo ? parseFloat(calculateFantasyPoints(playerTwo)) : 0;
+  const playerOnePoints = playerOne ? parseFloat(calculateFantasyPoints(playerOne.playerData)) : 0;
+  const playerTwoPoints = playerTwo ? parseFloat(calculateFantasyPoints(playerTwo.playerData)) : 0;
 
   // Determine which player has higher points
   const playerOneIsBetter = playerOnePoints > playerTwoPoints;
@@ -90,30 +116,30 @@ function Main() {
         <h2>Comparison Results</h2>
         {playerOne && playerTwo ? (
           <div className="comparison-table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Player</th>
-                  <th>Fantasy Points Per Game</th>
+          <table>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Fantasy Points Per Game</th>
+              </tr>
+            </thead>
+            <tbody>
+              {playerOne && playerOne.playerData && playerOne.playerData.player ? (
+                <tr className={playerOneIsBetter ? "highlight" : ""}>
+                  <td>{`${playerOne.playerData.player.first_name} ${playerOne.playerData.player.last_name}`}</td>
+                  <td>{playerOnePoints}</td>
                 </tr>
-              </thead>
-                <tbody>
-                {playerOne && playerOne.player ? (
-                  <tr className={playerOneIsBetter ? "highlight" : ""}>
-                    <td>{`${playerOne.player.first_name} ${playerOne.player.last_name}`}</td>
-                    <td>{playerOnePoints}</td>
-                  </tr>
-                ) : null}
-
-                {playerTwo && playerTwo.player ? (
-                  <tr className={playerTwoIsBetter ? "highlight" : ""}>
-                    <td>{`${playerTwo.player.first_name} ${playerTwo.player.last_name}`}</td>
-                    <td>{playerTwoPoints}</td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
+              ) : null}
+        
+              {playerTwo && playerTwo.playerData && playerTwo.playerData.player ? (
+                <tr className={playerTwoIsBetter ? "highlight" : ""}>
+                  <td>{`${playerTwo.playerData.player.first_name} ${playerTwo.playerData.player.last_name}`}</td>
+                  <td>{playerTwoPoints}</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>        
         ) : (
           <p>Select both players to see their fantasy points per game.</p>
         )}

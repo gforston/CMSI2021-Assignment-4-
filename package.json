@@ -9,9 +9,15 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "author": {
+    "name": "Quinn Austin"
+  },
   "contributors": [
     {
-      "name": "Quinn Austin"
+      "name": "Marcus Razo"
+    },
+    {
+      "name": "Greg Forston"
     }
   ],
   "dependencies": {
