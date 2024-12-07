@@ -4,11 +4,12 @@ import PlayerSearch from "./App"; // Import the PlayerSearch component
 import "./App.css";
 import { SignIn, SignOut } from "./Auth";
 import { useAuthentication } from "./services/authService";
-import { savePlayerToFirebase } from "./firebaseService"; // Import the utility function
+import { savePlayerToFirebase, loadPlayers } from "./firebaseService"; // Import utility functions
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
   const [playerTwo, setPlayerTwo] = useState(null);
+  const [loadedPlayers, setLoadedPlayers] = useState([]); // State for loaded players
   const user = useAuthentication();
 
   // Save players when both are selected
@@ -18,6 +19,10 @@ function Main() {
     if (playerTwo) savePlayerToFirebase(playerTwo, "Player Two", userId);
   }, [playerOne, playerTwo, user]);
 
+  const handleLoadPlayers = () => {
+    loadPlayers(user, setLoadedPlayers); // Call the function with required arguments
+  };
+
   // Helper function to calculate fantasy points
   const calculateFantasyPoints = (playerData) => {
     if (!playerData || !playerData.games_played) {
@@ -25,15 +30,15 @@ function Main() {
     }
 
     const points =
-      playerData.passing_yards / 25 + // 1 point per 25 passing yards
-      playerData.passing_touchdowns * 4 + // 4 points per passing TD
-      playerData.passing_interceptions * -2 + // -2 points per interception
-      playerData.rushing_yards / 10 + // 1 point per 10 rushing yards
-      playerData.rushing_touchdowns * 6 + // 6 points per rushing TD
-      playerData.receiving_yards / 10 + // 1 point per 10 receiving yards
-      playerData.receiving_touchdowns * 6 + // 6 points per receiving TD
-      (playerData.receptions || 0) * 1 - // 1 point per reception (PPR)
-      (playerData.fumbles_lost || 0) * 2; // -2 points per fumble lost
+      playerData.passing_yards / 25 +
+      playerData.passing_touchdowns * 4 +
+      playerData.passing_interceptions * -2 +
+      playerData.rushing_yards / 10 +
+      playerData.rushing_touchdowns * 6 +
+      playerData.receiving_yards / 10 +
+      playerData.receiving_touchdowns * 6 +
+      (playerData.receptions || 0) * 1 -
+      (playerData.fumbles_lost || 0) * 2;
 
     return (points / playerData.games_played).toFixed(2); // Average points per game
   };
@@ -96,6 +101,22 @@ function Main() {
           </div>
         ) : (
           <p>Select both players to see their fantasy points per game.</p>
+        )}
+      </div>
+
+      <div className="loaded-players-section">
+        <h2>Loaded Players</h2>
+        <button onClick={handleLoadPlayers}>Load Players from Firebase</button>
+        {loadedPlayers.length > 0 ? (
+          <ul>
+            {loadedPlayers.map((player, index) => (
+              <li key={index}>
+                {player.playerLabel}: {player.playerName} ({player.position})
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No players loaded yet.</p>
         )}
       </div>
     </div>

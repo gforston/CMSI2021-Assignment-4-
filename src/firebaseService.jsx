@@ -7,6 +7,28 @@ import { db } from "./firebaseConfig"; // Import your Firestore instance
  * @param {string} playerLabel - The label for the player (e.g., "Player One").
  * @param {string} userId - The user ID of the currently signed-in user or "guest".
  */
+export const fetchPlayersFromFirebase = async (userId) => {
+    try {
+      const playerTeamsRef = collection(db, "playerTeams");
+      const querySnapshot = await getDocs(playerTeamsRef);
+      const players = querySnapshot.docs
+        .map((doc) => doc.data())
+        .filter((player) => player.userId === userId); // Filter by user ID
+  
+      return players;
+    } catch (error) {
+      console.error("Error fetching players:", error);
+      return [];
+    }
+  };
+  
+  // Load players from Firebase
+export const loadPlayers = async (user, setLoadedPlayers) => {
+    const userId = user?.uid || "guest"; // Default to "guest" if not logged in
+    const players = await fetchPlayersFromFirebase(userId);
+    setLoadedPlayers(players);
+  };
+
 export const savePlayerToFirebase = async (player, playerLabel, userId) => {
   if (!player) return;
 
