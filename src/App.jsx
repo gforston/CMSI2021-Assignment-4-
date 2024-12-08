@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import api from "./services/apiService";
 import { getFromCache, setCache } from "./cache";
 import SearchBar from "./SearchBar"; // Import the new SearchBar component
 
-export default function PlayerSearch({ onPlayerSelect }) {
-  const [players, setPlayers] = useState([]); // Players fetched from the initial API
+export default function PlayerSearch({ onPlayerSelect, playerName }) {
+  const [players, setPlayers] = useState([]); // Players fetched from the API
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -20,10 +20,9 @@ export default function PlayerSearch({ onPlayerSelect }) {
       // Check if the query result is cached
       const cachedData = getFromCache(query);
       if (cachedData) {
-        // If cached, use the cached data
         setPlayers(cachedData);
         setSuggestions(cachedData.slice(0, 5)); // Limit to 5 suggestions
-        setLoading(false); // Stop loading as the data is from cache
+        setLoading(false);
         return;
       }
 
@@ -32,20 +31,17 @@ export default function PlayerSearch({ onPlayerSelect }) {
 
       let response;
       if (firstName && lastName) {
-        // If both first_name and last_name are provided, use them in the API request
         response = await api.nfl.getPlayers({
           first_name: firstName,
           last_name: lastName,
         });
       } else {
-        // Otherwise, use the search parameter as usual
         response = await api.nfl.getPlayers({ search: query });
       }
 
       const foundPlayers = response.data;
 
       if (foundPlayers.length > 0) {
-        // Fetch stats for found players
         const statsResponses = await Promise.all(
           foundPlayers.map((player) =>
             api.nfl.getSeasonStats({
@@ -55,20 +51,17 @@ export default function PlayerSearch({ onPlayerSelect }) {
           )
         );
 
-        // Combine player and stats data
         const combinedData = statsResponses.map((statsResponse, index) => {
-          const playerStats = statsResponse.data[0] || {}; // Default to an empty object if no stats found
+          const playerStats = statsResponse.data[0] || {};
           return {
             ...playerStats,
             player: foundPlayers[index],
           };
         });
 
-        // Cache the result for future use
         setCache(query, combinedData);
-
         setPlayers(combinedData);
-        setSuggestions(combinedData.slice(0, 5)); // Limit to 5 suggestions
+        setSuggestions(combinedData.slice(0, 5));
       } else {
         setPlayers([]);
         setSuggestions([]);
@@ -81,23 +74,28 @@ export default function PlayerSearch({ onPlayerSelect }) {
     }
   };
 
+  // Fetch stats if playerName is provided
+  useEffect(() => {
+    if (playerName) {
+      fetchPlayerByName(playerName);
+    }
+  }, [playerName]);
+
   const handleSearchChange = (query) => {
     setSearchQuery(query);
 
-    // Clear suggestions if search query is empty
     if (query.trim() === "") {
       setSuggestions([]);
       return;
     }
 
-    // Local filtering for suggestions
     const filteredSuggestions = players.filter((playerData) => {
       const fullName =
         `${playerData.player.first_name} ${playerData.player.last_name}`.toLowerCase();
       return fullName.includes(query.toLowerCase());
     });
 
-    setSuggestions(filteredSuggestions.slice(0, 5)); // Limit to 5 suggestions
+    setSuggestions(filteredSuggestions.slice(0, 5));
   };
 
   const handleKeyDown = (e) => {
@@ -108,15 +106,15 @@ export default function PlayerSearch({ onPlayerSelect }) {
 
   const handleSuggestionClick = (playerData) => {
     if (playerData && playerData.player) {
-      setSelectedPlayer(playerData); // Store selected player data
+      setSelectedPlayer(playerData);
       setSearchQuery(
         `${playerData.player.first_name} ${playerData.player.last_name}`
-      ); // Update search bar text
-      setSuggestions([]); // Clear suggestions
+      );
+      setSuggestions([]);
 
       if (onPlayerSelect) {
         onPlayerSelect({
-          playerId: playerData.player.id, // Pass playerId to parent
+          playerId: playerData.player.id,
           playerData,
         });
       }

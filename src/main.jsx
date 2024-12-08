@@ -19,8 +19,8 @@ function Main() {
     if (playerTwo) savePlayerToFirebase(playerTwo, "Player Two", userId);
   }, [playerOne, playerTwo, user]);
 
-  const handleLoadPlayers = () => {
-    loadPlayers(user, setLoadedPlayers); // Call the function with required arguments
+  const handleLoadPlayers = async () => {
+    await loadPlayers(user, setLoadedPlayers); // Call the function with required arguments
   };
 
   // Helper function to calculate fantasy points
@@ -65,11 +65,25 @@ function Main() {
       <div className="player-search-sections">
         <div className="player-search">
           <h2>Player 1</h2>
-          <PlayerSearch onPlayerSelect={setPlayerOne} />
+          {/* Pass the player name from Firebase to PlayerSearch */}
+          <PlayerSearch
+            onPlayerSelect={setPlayerOne}
+            playerName={
+              loadedPlayers.find((p) => p.playerLabel === "Player One")
+                ?.playerName || null
+            }
+          />
         </div>
         <div className="player-search">
           <h2>Player 2</h2>
-          <PlayerSearch onPlayerSelect={setPlayerTwo} />
+          {/* Pass the player name from Firebase to PlayerSearch */}
+          <PlayerSearch
+            onPlayerSelect={setPlayerTwo}
+            playerName={
+              loadedPlayers.find((p) => p.playerLabel === "Player Two")
+                ?.playerName || null
+            }
+          />
         </div>
       </div>
 
@@ -130,5 +144,6 @@ function Main() {
 }
 
 export default Main;
+
 
 ReactDOM.render(<Main />, document.getElementById("root"));
