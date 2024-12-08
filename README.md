@@ -7,7 +7,7 @@ Fantasy Faceoff 🏈
 
 
 # 🚀 Features
-Search and Compare:
+## Search and Compare:
 
 Quickly search for two NFL players using the autocomplete search bar.
 Compare their performance statistics side-by-side in an intuitive interface.
@@ -19,23 +19,23 @@ Responsive Design:
 
 Designed to work seamlessly on desktops, tablets, and mobile devices.
 
-Real-Time Data:
+## Real-Time Data:
 
 Powered by Balldontlie API to fetch up-to-date player statistics.
 
-🏗️ How It Works
+# 🏗️ How It Works
 
-Search Players:
+## Search Players:
 
 Type the name of an NFL player in either of the two search bars.
 Select a player from the autocomplete dropdown.
 
-View Comparison:
+## View Comparison:
 
 The app calculates the average fantasy points per game for each player.
 Displays a comparison table with the results for easy analysis.
 
-Make Informed Decisions:
+## Make Informed Decisions:
 
 Use the comparison data to decide which player is the better pick for your fantasy football team.
 🧮 Fantasy Scoring System
@@ -61,18 +61,18 @@ Receiving Stats:
 Miscellaneous:
 
 -2 points for lost fumbles.
-💻 Technologies Used
+# 💻 Technologies Used
 
-Frontend:
+## Frontend:
 
 React.js for building the user interface.
 CSS for styling and responsive design.
 
-API:
+## API:
 
 Balldontlie API for player statistics.
 
-Development Tools:
+## Development Tools:
 
 Visual Studio Code for development.
 Git and GitHub for version control.
