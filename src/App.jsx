@@ -113,7 +113,7 @@ export default function PlayerSearch({ onPlayerSelect }) {
         `${playerData.player.first_name} ${playerData.player.last_name}`
       ); // Update search bar text
       setSuggestions([]); // Clear suggestions
-  
+
       if (onPlayerSelect) {
         onPlayerSelect({
           playerId: playerData.player.id, // Pass playerId to parent
@@ -121,23 +121,23 @@ export default function PlayerSearch({ onPlayerSelect }) {
         });
       }
     } else {
-      console.error('Player data is missing');
+      console.error("Player data is missing");
     }
   };
-  
+
   const getApplicableStats = (playerData) => {
     const stats = {
       "Games Played": playerData.games_played,
       "Passing Yards": playerData.passing_yards,
       "Passing Yards Per Game": playerData.passing_yards_per_game,
       "Passing Touchdowns": playerData.passing_touchdowns,
-      "Interceptions": playerData.passing_interceptions,
+      Interceptions: playerData.passing_interceptions,
       "Rushing Yards": playerData.rushing_yards,
       "Rushing Touchdowns": playerData.rushing_touchdowns,
       "Rushing Attempts": playerData.rushing_attempts,
       "Receiving Yards": playerData.receiving_yards,
       "Receiving Touchdowns": playerData.receiving_touchdowns,
-      "Receptions": playerData.receptions,
+      Receptions: playerData.receptions,
     };
 
     return Object.entries(stats).filter(

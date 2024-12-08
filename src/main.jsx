@@ -44,8 +44,12 @@ function Main() {
   };
 
   // Calculate fantasy points for each player
-  const playerOnePoints = playerOne ? parseFloat(calculateFantasyPoints(playerOne.playerData)) : 0;
-  const playerTwoPoints = playerTwo ? parseFloat(calculateFantasyPoints(playerTwo.playerData)) : 0;
+  const playerOnePoints = playerOne
+    ? parseFloat(calculateFantasyPoints(playerOne.playerData))
+    : 0;
+  const playerTwoPoints = playerTwo
+    ? parseFloat(calculateFantasyPoints(playerTwo.playerData))
+    : 0;
 
   // Determine which player has higher points
   const playerOneIsBetter = playerOnePoints > playerTwoPoints;
@@ -54,9 +58,7 @@ function Main() {
   return (
     <div className="comparison-container">
       <header>
-        <h1 className="signIn bar">
-          SignIn bar {!user ? <SignIn /> : <SignOut />}
-        </h1>
+        <h1 className="signIn bar">{!user ? <SignIn /> : <SignOut />}</h1>
       </header>
       <h1>Player Comparison</h1>
 
@@ -83,14 +85,18 @@ function Main() {
                 </tr>
               </thead>
               <tbody>
-                {playerOne && playerOne.playerData && playerOne.playerData.player ? (
+                {playerOne &&
+                playerOne.playerData &&
+                playerOne.playerData.player ? (
                   <tr className={playerOneIsBetter ? "highlight" : ""}>
                     <td>{`${playerOne.playerData.player.first_name} ${playerOne.playerData.player.last_name}`}</td>
                     <td>{playerOnePoints}</td>
                   </tr>
                 ) : null}
 
-                {playerTwo && playerTwo.playerData && playerTwo.playerData.player ? (
+                {playerTwo &&
+                playerTwo.playerData &&
+                playerTwo.playerData.player ? (
                   <tr className={playerTwoIsBetter ? "highlight" : ""}>
                     <td>{`${playerTwo.playerData.player.first_name} ${playerTwo.playerData.player.last_name}`}</td>
                     <td>{playerTwoPoints}</td>
