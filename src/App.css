@@ -6,11 +6,49 @@ body {
   padding: 0;
 }
 
+header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #1f1f1f;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header .title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+header .sign-in {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+header .sign-in button {
+  background-color: #444444;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+header .sign-in button:hover {
+  background-color: #555555;
+}
+
 .search-bar {
-  width: 92%; 
+  width: 92%;
   padding: 12px;
-  font-size: 16px; 
-  margin-bottom: 12px; 
+  font-size: 16px;
+  margin-bottom: 12px;
   border: none;
   border-radius: 8px;
   color: #ffffff;
@@ -33,7 +71,7 @@ body {
 }
 
 .player-one .search-bar {
-  background-color: #550000; 
+  background-color: #550000;
 }
 
 .player-one .player-stats {
@@ -126,7 +164,7 @@ body {
 
 .comparison-table {
   width: 100%;
-  max-width: 600px; 
+  max-width: 600px;
   margin-top: 10px;
   text-align: center;
 }
@@ -185,9 +223,14 @@ body {
   border-bottom: none;
 }
 
+.loaded-players-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .player-search-sections {
-    flex-direction: column; 
+    flex-direction: column;
   }
 
   .comparison-container {
@@ -196,11 +239,11 @@ body {
 
   .player-one,
   .player-two {
-    max-width: 100%; 
+    max-width: 100%;
   }
 
   .comparison-table {
-    margin-left: 0; 
+    margin-left: 0;
   }
 
   .search-bar {
@@ -208,7 +251,7 @@ body {
   }
 
   h1 {
-    font-size: 24px; 
+    font-size: 24px;
   }
 
   h2 {

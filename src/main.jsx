@@ -1,32 +1,30 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import PlayerSearch from "./App"; // Import the PlayerSearch component
+import PlayerSearch from "./App"; 
 import "./App.css";
 import { SignIn, SignOut } from "./Auth";
 import { useAuthentication } from "./services/authService";
-import { savePlayerToFirebase, loadPlayers } from "./firebaseService"; // Import utility functions
+import { savePlayerToFirebase, loadPlayers } from "./firebaseService"; 
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
   const [playerTwo, setPlayerTwo] = useState(null);
-  const [loadedPlayers, setLoadedPlayers] = useState([]); // State for loaded players
+  const [loadedPlayers, setLoadedPlayers] = useState([]); 
   const user = useAuthentication();
 
-  // Save players when both are selected
   React.useEffect(() => {
-    const userId = user?.uid || "guest"; // Default to "guest" if not logged in
+    const userId = user?.uid || "guest"; 
     if (playerOne) savePlayerToFirebase(playerOne, "Player One", userId);
     if (playerTwo) savePlayerToFirebase(playerTwo, "Player Two", userId);
   }, [playerOne, playerTwo, user]);
 
   const handleLoadPlayers = async () => {
-    await loadPlayers(user, setLoadedPlayers); // Call the function with required arguments
+    await loadPlayers(user, setLoadedPlayers); 
   };
 
-  // Helper function to calculate fantasy points
   const calculateFantasyPoints = (playerData) => {
     if (!playerData || !playerData.games_played) {
-      return 0; // Avoid division by zero or missing data
+      return 0; 
     }
 
     const points =
@@ -40,10 +38,9 @@ function Main() {
       (playerData.receptions || 0) * 1 -
       (playerData.fumbles_lost || 0) * 2;
 
-    return (points / playerData.games_played).toFixed(2); // Average points per game
+    return (points / playerData.games_played).toFixed(2); 
   };
 
-  // Calculate fantasy points for each player
   const playerOnePoints = playerOne
     ? parseFloat(calculateFantasyPoints(playerOne.playerData))
     : 0;
@@ -51,7 +48,6 @@ function Main() {
     ? parseFloat(calculateFantasyPoints(playerTwo.playerData))
     : 0;
 
-  // Determine which player has higher points
   const playerOneIsBetter = playerOnePoints > playerTwoPoints;
   const playerTwoIsBetter = playerTwoPoints > playerOnePoints;
 
