@@ -63,29 +63,28 @@ function Main() {
       <h1>Player Comparison</h1>
 
       <div className="player-search-sections">
-        <div className="player-search">
+        <div className="player-one">
           <h2>Player 1</h2>
-          {/* Pass the player name from Firebase to PlayerSearch */}
           <PlayerSearch
             onPlayerSelect={setPlayerOne}
             playerName={
-              loadedPlayers.find((p) => p.playerLabel === "Player One")
-                ?.playerName || null
+              loadedPlayers.find((p) => p.playerLabel === "Player One")?.playerName ||
+              null
             }
           />
         </div>
-        <div className="player-search">
+        <div className="player-two">
           <h2>Player 2</h2>
-          {/* Pass the player name from Firebase to PlayerSearch */}
           <PlayerSearch
             onPlayerSelect={setPlayerTwo}
             playerName={
-              loadedPlayers.find((p) => p.playerLabel === "Player Two")
-                ?.playerName || null
+              loadedPlayers.find((p) => p.playerLabel === "Player Two")?.playerName ||
+              null
             }
           />
         </div>
       </div>
+
 
       <div className="comparison-results">
         <h2>Comparison Results</h2>
