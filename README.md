@@ -1,4 +1,5 @@
 # Fanasty Faceoff
+<img src="github preview website.png" alt="">
 Fantasy Faceoff is a React-based web application that allows users to compare NFL players' statistics side-by-side to determine which player is a better pick for their fantasy football team. By leveraging real-time NFL player data and calculating average fantasy points per game, Fantasy Faceoff simplifies decision-making for fantasy football enthusiasts.
 ## Website
 https://fanasty-faceoff.web.app/
