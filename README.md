@@ -3,9 +3,6 @@ Fantasy Faceoff is a React-based web application that allows users to compare NF
 ## Website
 https://fanasty-faceoff.web.app/
 
-Fantasy Faceoff 🏈
-
-
 # 🚀 Features
 ## Search and Compare:
 
