@@ -1,4 +1,3 @@
-/* General container styling */
 body {
   background: linear-gradient(180deg, #121212, #1a1a1a);
   color: #e0e0e0;
@@ -7,19 +6,17 @@ body {
   padding: 0;
 }
 
-/* Search bar styling */
 .search-bar {
-  width: 100%; /* Full width within the parent container */
+  width: 92%; 
   padding: 12px;
-  font-size: 16px; /* Adjust font size for better readability */
-  margin-bottom: 12px; /* Only bottom margin to avoid overflowing */
+  font-size: 16px; 
+  margin-bottom: 12px; 
   border: none;
   border-radius: 8px;
   color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Player 1 (Red Theme) box and search bar */
 .player-one {
   flex: 1;
   background: linear-gradient(145deg, #3a0d0d, #5a1a1a);
@@ -36,7 +33,7 @@ body {
 }
 
 .player-one .search-bar {
-  background-color: #550000; /* Red theme for Player 1 search bar */
+  background-color: #550000; 
 }
 
 .player-one .player-stats {
@@ -47,7 +44,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Player 2 (Blue Theme) box and search bar */
 .player-two {
   flex: 1;
   background: linear-gradient(145deg, #0d213a, #1a3a5a);
@@ -64,7 +60,7 @@ body {
 }
 
 .player-two .search-bar {
-  background-color: #003366; /* Blue theme for Player 2 search bar */
+  background-color: #003366;
 }
 
 .player-two .player-stats {
@@ -75,7 +71,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Suggestions dropdown styling */
 .suggestions {
   list-style-type: none;
   padding: 0;
@@ -99,7 +94,6 @@ body {
   background-color: #333333;
 }
 
-/* Comparison container */
 .comparison-container {
   display: flex;
   flex-direction: column;
@@ -107,7 +101,6 @@ body {
   padding: 20px;
 }
 
-/* Player search sections */
 .player-search-sections {
   display: flex;
   justify-content: space-between;
@@ -117,7 +110,6 @@ body {
   margin: 20px auto;
 }
 
-/* Comparison results section */
 .comparison-results {
   width: 100%;
   max-width: 800px;
@@ -132,10 +124,9 @@ body {
   align-items: center;
 }
 
-/* Comparison table */
 .comparison-table {
   width: 100%;
-  max-width: 600px; /* Maintain width for layout */
+  max-width: 600px; 
   margin-top: 10px;
   text-align: center;
 }
@@ -164,7 +155,6 @@ body {
   border-radius: 8px;
 }
 
-/* Buttons */
 .compare-button {
   background: #444444;
   color: #ffffff;
@@ -180,7 +170,6 @@ body {
   background: #555555;
 }
 
-/* Player stats list */
 .player-stats {
   list-style-type: none;
   padding: 0;
@@ -196,10 +185,9 @@ body {
   border-bottom: none;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .player-search-sections {
-    flex-direction: column; /* Stack vertically on smaller screens */
+    flex-direction: column; 
   }
 
   .comparison-container {
@@ -208,19 +196,19 @@ body {
 
   .player-one,
   .player-two {
-    max-width: 100%; /* Full width on smaller screens */
+    max-width: 100%; 
   }
 
   .comparison-table {
-    margin-left: 0; /* Reset margin for proper alignment */
+    margin-left: 0; 
   }
 
   .search-bar {
-    font-size: 14px; /* Smaller font size for mobile */
+    font-size: 14px;
   }
 
   h1 {
-    font-size: 24px; /* Smaller font for mobile */
+    font-size: 24px; 
   }
 
   h2 {
