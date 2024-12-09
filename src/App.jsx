@@ -16,19 +16,22 @@ export default function PlayerSearch({ onPlayerSelect, playerName }) {
   const fetchPlayerByName = async (query) => {
     try {
       setLoading(true);
-
+  
+      // Encode the query to handle special characters safely
+      const encodedQuery = encodeURIComponent(query);
+  
       // Check if the query result is cached
-      const cachedData = getFromCache(query);
+      const cachedData = getFromCache(encodedQuery);
       if (cachedData) {
         setPlayers(cachedData);
         setSuggestions(cachedData.slice(0, 5)); // Limit to 5 suggestions
         setLoading(false);
         return;
       }
-
+  
       // Split the query into first_name and last_name if both are present
-      const [firstName, lastName] = query.trim().split(" ");
-
+      const [firstName, lastName] = query.trim().split(" ").map(encodeURIComponent);
+  
       let response;
       if (firstName && lastName) {
         response = await api.nfl.getPlayers({
@@ -36,11 +39,11 @@ export default function PlayerSearch({ onPlayerSelect, playerName }) {
           last_name: lastName,
         });
       } else {
-        response = await api.nfl.getPlayers({ search: query });
+        response = await api.nfl.getPlayers({ search: encodedQuery });
       }
-
+  
       const foundPlayers = response.data;
-
+  
       if (foundPlayers.length > 0) {
         const statsResponses = await Promise.all(
           foundPlayers.map((player) =>
@@ -50,7 +53,7 @@ export default function PlayerSearch({ onPlayerSelect, playerName }) {
             })
           )
         );
-
+  
         const combinedData = statsResponses.map((statsResponse, index) => {
           const playerStats = statsResponse.data[0] || {};
           return {
@@ -58,8 +61,8 @@ export default function PlayerSearch({ onPlayerSelect, playerName }) {
             player: foundPlayers[index],
           };
         });
-
-        setCache(query, combinedData);
+  
+        setCache(encodedQuery, combinedData);
         setPlayers(combinedData);
         setSuggestions(combinedData.slice(0, 5));
       } else {
@@ -73,6 +76,7 @@ export default function PlayerSearch({ onPlayerSelect, playerName }) {
       setLoading(false);
     }
   };
+  
 
   // Fetch stats if playerName is provided
   useEffect(() => {
