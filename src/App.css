@@ -18,10 +18,18 @@ header {
   z-index: 10;
 }
 
-header .title {
+.header .title {
+  display: flex;
+  align-items: center; /* Vertically center text and image */
+  gap: clamp(1px, 1vw, 30px); /* Minimum 10px, scales up to 2vw, max 30px */
   font-size: 24px;
   font-weight: bold;
   color: #ffffff;
+}
+
+.title-image {
+  width: 50px; 
+  height: auto; /* Maintain aspect ratio */
 }
 
 header .sign-in {

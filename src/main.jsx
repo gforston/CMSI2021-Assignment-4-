@@ -5,6 +5,7 @@ import "./App.css";
 import { SignIn, SignOut } from "./Auth";
 import { useAuthentication } from "./services/authService";
 import { savePlayerToFirebase, loadPlayers } from "./firebaseService"; // Import utility functions
+import logo from "./assets/logo.png"; // Import the logo
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
@@ -59,7 +60,9 @@ function Main() {
     <div>
       {/* Header with Title and Sign-In/Out */}
       <header className="header">
-        <div className="title">Fantasy Faceoff</div>
+        <div className="title">Fantasy Faceoff
+        <img src={logo} alt="Fantasy Faceoff Logo" className="title-image" />
+        </div>
         <div className="sign-in">{!user ? <SignIn /> : <SignOut />}</div>
       </header>
 
