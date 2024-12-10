@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import PlayerSearch from "./App"; // Import the PlayerSearch component
 import "./App.css";
-import { SignIn, SignOut } from "./Auth";
+import Header from "./Header";
 import { useAuthentication } from "./services/authService";
 import { savePlayerToFirebase, loadPlayers } from "./firebaseService"; // Import utility functions
-import logo from "./assets/logo.png"; // Import the logo
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);
@@ -59,12 +58,7 @@ function Main() {
   return (
     <div>
       {/* Header with Title and Sign-In/Out */}
-      <header className="header">
-        <div className="title">Fantasy Faceoff
-        <img src={logo} alt="Fantasy Faceoff Logo" className="title-image" />
-        </div>
-        <div className="sign-in">{!user ? <SignIn /> : <SignOut />}</div>
-      </header>
+      <Header user={user} /> {/* Use the Header component */}
 
       {/* Main Comparison Container */}
       <div className="comparison-container">
