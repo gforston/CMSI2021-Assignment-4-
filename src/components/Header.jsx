@@ -1,6 +1,7 @@
 import React from "react";
 import { SignIn, SignOut } from "./Auth"; // Adjust the path based on your file structure
 import logo from "../assets/logo.png"; // Adjust the path based on your file structure
+import "./Header.css"
 
 function Header({ user }) {
   return (
