@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import api from "./services/apiService";
+import api from "../services/apiService";
 import { getFromCache, setCache } from "./cache";
 import SearchBar from "./SearchBar"; // Import the new SearchBar component
 

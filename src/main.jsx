@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import PlayerSearch from "./App"; // Import the PlayerSearch component
-import "./App.css";
-import Header from "./Header";
+import PlayerSearch from "./components/App";
+import "./components/App.css";
+import Header from "./components/Header";
 import { useAuthentication } from "./services/authService";
-import { savePlayerToFirebase, loadPlayers } from "./firebaseService"; // Import utility functions
+import { savePlayerToFirebase, loadPlayers } from "./services/firebaseService"; 
 
 function Main() {
   const [playerOne, setPlayerOne] = useState(null);

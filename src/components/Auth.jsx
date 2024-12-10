@@ -3,7 +3,7 @@ import {
   logout,
   loggedInUserDisplayName,
   loggedInUserPhoto,
-} from "./services/authService";
+} from "../services/authService";
 import "./auth.css";
 
 export function SignIn() {

@@ -1,5 +1,5 @@
 import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
-import { db } from "./firebaseConfig"; // Import your Firestore instance
+import { db } from "../components/firebaseConfig"; // Import your Firestore instance
 
 /**
  * Save or update a player in the Firestore database.
